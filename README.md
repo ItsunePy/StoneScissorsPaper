@@ -1,0 +1,3 @@
+My 1st Py game :) 
+It will have some upds soon... 
+Enjoy this.
