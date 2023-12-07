@@ -24,6 +24,8 @@ my = (main.winfo_screenheight() - main.winfo_reqheight()) / 2 - 150
 main.geometry(f'800x500+{int(mx)}+{int(my)}')
 main.resizable(0, 0)
 
+# Game data
+
 try:
     os.mkdir('images')
 except FileExistsError:
@@ -60,18 +62,19 @@ try:
 except FileExistsError:
     pass
 
+try:
+    os.mkdir('saves')
+except FileExistsError:
+    pass
+
+# - - -
+
 main.iconbitmap('images\\ssp.ico')
 
 a1 = ''
 dataname = ''
 datapass = ''
 win, draw, lose = 0, 0, 0
-
-try:
-    os.mkdir('saves')
-except FileExistsError:
-    pass
-
 
 def success():
     global logbtn, regbtn, errorlr, stats, win, draw, lose, dataname, accountname
