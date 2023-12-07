@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import os
+import requests
 from PIL import Image
 import random
 
@@ -14,7 +15,7 @@ def maincloseevent():
 
 
 main = ctk.CTk()
-ctk.set_appearance_mode("dark")  #
+ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
 main.protocol('WM_DELETE_WINDOW', maincloseevent)
 main.title('Камень, ножницы, бумага!')
@@ -22,7 +23,44 @@ mx = (main.winfo_screenwidth() - main.winfo_reqwidth()) / 2 - 300
 my = (main.winfo_screenheight() - main.winfo_reqheight()) / 2 - 150
 main.geometry(f'800x500+{int(mx)}+{int(my)}')
 main.resizable(0, 0)
-main.iconbitmap('images\ssp.ico')
+
+try:
+    os.mkdir('images')
+except FileExistsError:
+    pass
+
+try:
+    with open('images\\ssp.ico', 'xb') as f:
+        icourl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/ssp.ico').content
+        f.write(icourl)
+except FileExistsError:
+    pass
+try:
+    with open('images\\background.png', 'xb') as f:
+        bgurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/background.png').content
+        f.write(bgurl)
+except FileExistsError:
+    pass
+try:
+    with open('images\\stone.png', 'xb') as f:
+        stoneurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/stone.png').content
+        f.write(stoneurl)
+except FileExistsError:
+    pass
+try:
+    with open('images\\scissors.png', 'xb') as f:
+        scissorsurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/scissors.png').content
+        f.write(scissorsurl)
+except FileExistsError:
+    pass
+try:
+    with open('images\\paper.png', 'xb') as f:
+        paperurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/paper.png').content
+        f.write(paperurl)
+except FileExistsError:
+    pass
+
+main.iconbitmap('images\\ssp.ico')
 
 a1 = ''
 dataname = ''
