@@ -1,4 +1,3 @@
-from tkinter import ttk as ttk
 import customtkinter as ctk
 import os
 from PIL import Image
