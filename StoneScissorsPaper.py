@@ -14,7 +14,7 @@ def maincloseevent():
 
 
 main = ctk.CTk()
-ctk.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
+ctk.set_appearance_mode("dark")  #
 ctk.set_default_color_theme("dark-blue")
 main.protocol('WM_DELETE_WINDOW', maincloseevent)
 main.title('Камень, ножницы, бумага!')
