@@ -6,12 +6,9 @@ import random
 
 wopened = False
 
-
 def maincloseevent():
-    if wopened == True:
-        pass
-    else:
-        main.destroy()
+    if wopened == True: pass
+    else: main.destroy()
 
 
 main = ctk.CTk()
@@ -24,57 +21,40 @@ my = (main.winfo_screenheight() - main.winfo_reqheight()) / 2 - 150
 main.geometry(f'800x500+{int(mx)}+{int(my)}')
 main.resizable(0, 0)
 
-# Game data
-
-try:
-    os.mkdir('images')
-except FileExistsError:
-    pass
-
+try: os.mkdir('images')
+except FileExistsError: pass
 try:
     with open('images\\ssp.ico', 'xb') as f:
         icourl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/ssp.ico').content
         f.write(icourl)
-except FileExistsError:
-    pass
+except FileExistsError: pass
 try:
     with open('images\\background.png', 'xb') as f:
         bgurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/background.png').content
         f.write(bgurl)
-except FileExistsError:
-    pass
+except FileExistsError: pass
 try:
     with open('images\\stone.png', 'xb') as f:
         stoneurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/stone.png').content
         f.write(stoneurl)
-except FileExistsError:
-    pass
+except FileExistsError: pass
 try:
     with open('images\\scissors.png', 'xb') as f:
         scissorsurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/scissors.png').content
         f.write(scissorsurl)
-except FileExistsError:
-    pass
+except FileExistsError: pass
 try:
     with open('images\\paper.png', 'xb') as f:
         paperurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/paper.png').content
         f.write(paperurl)
-except FileExistsError:
-    pass
+except FileExistsError: pass
 
-try:
-    os.mkdir('saves')
-except FileExistsError:
-    pass
-
-# - - -
+try: os.mkdir('saves')
+except FileExistsError: pass
 
 main.iconbitmap('images\\ssp.ico')
 
-a1 = ''
-dataname = ''
-datapass = ''
-win, draw, lose = 0, 0, 0
+a1, dataname, datapass, win, draw, lose = '', '', '', 0, 0, 0
 
 def success():
     global logbtn, regbtn, errorlr, stats, win, draw, lose, dataname, accountname
@@ -160,9 +140,6 @@ def stone():
 
     system(1)
 
-
-# System
-
 def dataf(datanamef):
     global win, draw, lose, dataname, a1, datapass
     data = open("saves\\" + datanamef + '.txt', 'r')
@@ -205,12 +182,10 @@ def system(plr):
     elif plr == 3 and systemchoice == 1: message3.configure(text_color='green', text='Бумага накрыла Камень.\nВы победили!')
     elif plr == 3 and systemchoice == 2: message3.configure(text_color='red', text='Ножницы разрезали Бумагу.\nВы проиграли!')
 
-    # Достижения
+    # Advancements
 
     if int(win) >= 1 and a1 == 'X':
         a1 = 'V'
-
-    # ---
 
     data = open("saves\\" + dataname + '.txt', 'w')
     data.write(datapass + '\n' + str(win) + '\n' + str(draw) + '\n' + str(lose) + '\n' + str(a1) + '\n')
@@ -264,16 +239,12 @@ def loginscript():
     wopened = True
 
     def s_or_h_log():
-        if userloginenter.cget('show') == '●':
-            userloginenter.configure(show='')
-        else:
-            userloginenter.configure(show='●')
+        if userloginenter.cget('show') == '●': userloginenter.configure(show='')
+        else: userloginenter.configure(show='●')
 
     def s_or_h_pass():
-        if userpasswordenter.cget('show') == '●':
-            userpasswordenter.configure(show='')
-        else:
-            userpasswordenter.configure(show='●')
+        if userpasswordenter.cget('show') == '●': userpasswordenter.configure(show='')
+        else: userpasswordenter.configure(show='●')
 
     def logcloseevent():
         global wopened
@@ -283,30 +254,21 @@ def loginscript():
         log.destroy()
 
     def validate_input(text):
-        if len(text) < 12 and ' ' not in text:
-            return True
-        else:
-            return False
+        if len(text) < 12 and ' ' not in text: return True
+        else: return False
 
     log = ctk.CTk()
-
     log.title('Вход')
-
     log.geometry(f'170x200+{int(mx)+30}+{int(my)+150}')
-
     log.resizable(0, 0)
-
     log.iconbitmap('images\ssp.ico')
 
     def loginfunc():
 
         global errorlr, wopened
-
         dataname = userloginenter.get()
-        try:
-            data = open("saves\\" + dataname + '.txt', 'r')
-        except FileNotFoundError:
-            errorlr.configure(text='Аккаунт не найден, данные отклонены!')
+        try: data = open("saves\\" + dataname + '.txt', 'r')
+        except FileNotFoundError: errorlr.configure(text='Аккаунт не найден, данные отклонены!')
         else:
             with data:
                 datapass = userpasswordenter.get()
@@ -321,7 +283,6 @@ def loginscript():
                     log.destroy()
                 elif check != datapass:
                     errorlr.configure(text='Пароли не совпадают, данные отклонены!')
-                    # print(check, datapass)
 
     validate_cmd = (log.register(validate_input), '%P')  # new
 
@@ -329,8 +290,7 @@ def loginscript():
     userloginenter = ctk.CTkEntry(master=log, show='●', validate='key', validatecommand=validate_cmd, width=125)  # new
     logshow = ctk.CTkSwitch(master=log, text='', width=10, command=s_or_h_log)  # new
     userpassword = ctk.CTkLabel(master=log, text='Пароль', font=('Minecraft Rus', 14))
-    userpasswordenter = ctk.CTkEntry(master=log, show='●', validate='key', validatecommand=validate_cmd,
-                                     width=125)  # new
+    userpasswordenter = ctk.CTkEntry(master=log, show='●', validate='key', validatecommand=validate_cmd,width=125)  # new
     passshow = ctk.CTkSwitch(master=log, text='', width=10, command=s_or_h_pass)  # new
     apply = ctk.CTkButton(master=log, text='Войти', font=('Minecraft Rus', 14), command=loginfunc)
 
@@ -356,28 +316,20 @@ def registrationscript():
     wopened = True
 
     def s_or_h_log():
-        if loginenter.cget('show') == '●':
-            loginenter.configure(show='')
-        else:
-            loginenter.configure(show='●')
+        if loginenter.cget('show') == '●': loginenter.configure(show='')
+        else: loginenter.configure(show='●')
 
     def s_or_h_pass():
-        if passwordenter.cget('show') == '●':
-            passwordenter.configure(show='')
-        else:
-            passwordenter.configure(show='●')
+        if passwordenter.cget('show') == '●': passwordenter.configure(show='')
+        else: passwordenter.configure(show='●')
 
     def s_or_h_pass_2():
-        if passwordenter2.cget('show') == '●':
-            passwordenter2.configure(show='')
-        else:
-            passwordenter2.configure(show='●')
+        if passwordenter2.cget('show') == '●': passwordenter2.configure(show='')
+        else: passwordenter2.configure(show='●')
 
     def validate_input(text):
-        if len(text) < 12 and ' ' not in text:
-            return True
-        else:
-            return False
+        if len(text) < 12 and ' ' not in text: return True
+        else: return False
 
     def regcloseevent():
         global wopened
@@ -387,22 +339,16 @@ def registrationscript():
         reg.destroy()
 
     reg = ctk.CTk()
-
     reg.title('Регистрация')
-
     reg.geometry(f'170x200+{int(mx) + 600}+{int(my) + 150}')
-
     reg.resizable(0, 0)
-
     reg.iconbitmap('images\ssp.ico')
 
     def registration():
         global errorlr, wopened
         dataname = loginenter.get()
-        try:
-            data = open("saves\\" + dataname + '.txt', 'x')
-        except FileExistsError:
-            errorlr.configure(text='Логин занят, попробуйте ещё раз.')
+        try: data = open("saves\\" + dataname + '.txt', 'x')
+        except FileExistsError: errorlr.configure(text='Логин занят, попробуйте ещё раз.')
         else:
             with data:
                 if len(dataname) < 4:
@@ -466,13 +412,9 @@ def registrationscript():
 
     reg.mainloop()
 
-# background
-
 bg = ctk.CTkImage(dark_image=Image.open('images\\background.png'), size=(800, 500))
 bglabel = ctk.CTkLabel(master=main, image=bg, text='')
 bglabel.place(x=0, y=0, relwidth=1, relheight=1)
-
-# Start script
 
 errorlr = ctk.CTkLabel(master=main, text='', text_color='red', font=('Minecraft Rus', 14))
 logbtn = ctk.CTkButton(master=main, text='Вход', command=loginscript, height=50, width=200, font=('Minecraft Rus', 14))
@@ -481,8 +423,6 @@ regbtn = ctk.CTkButton(master=main, text='Регистрация', command=regis
 errorlr.place(relx=0.5, rely=0.8, anchor='center')
 logbtn.place(relx=0.5, rely=0.39, anchor='center')
 regbtn.place(relx=0.5, rely=0.51, anchor='center')
-
-# Main script
 
 mainwindoww = ctk.CTkButton(master=main, text='Главное окно', command=mainwindow, font=('Minecraft Rus', 14), height=80, width=150)
 advancementsw = ctk.CTkButton(master=main, text='Достижения', command=advancements, font=('Minecraft Rus', 14), height=80, width=150)
@@ -493,8 +433,6 @@ stats = ctk.CTkLabel(master=main, text='', text_color='green', font=('Minecraft 
 advancementslabel1 = ctk.CTkLabel(master=main, text='Достижения...', text_color='green', font=('Minecraft Rus', 14), justify='left', height=350, width=380)
 advancementslabel2 = ctk.CTkLabel(master=main, text='', text_color='green', font=('Minecraft Rus', 14), justify='center', height=350, width=380)
 
-# Game script
-
 stoneb = ctk.CTkButton(master=main, text='', command=stone, image=ctk.CTkImage(dark_image=Image.open('images\stone.png'), size=(80, 80)), height=100, width=100, font=('Minecraft Rus', 14), fg_color='white')
 scissorsb = ctk.CTkButton(master=main, text='', command=scissors, image=ctk.CTkImage(dark_image=Image.open('images\scissors.png'), size=(80, 80)), height=100, width=100, font=('Minecraft Rus', 14), fg_color='white')
 paperb = ctk.CTkButton(master=main, text='', command=paper, image=ctk.CTkImage(dark_image=Image.open('images\paper.png'), size=(80, 80)), height=100, width=100, font=('Minecraft Rus', 14), fg_color='white')
@@ -504,7 +442,5 @@ message2 = ctk.CTkLabel(master=main, text='', font=('Minecraft Rus', 14), justif
 message3 = ctk.CTkLabel(master=main, text='', font=('Minecraft Rus', 12), justify='center')
 
 continuebtn = ctk.CTkButton(master=main, text='Продолжить', command=continuef, height=100, width=230, font=('Minecraft Rus', 14))
-
-# main script is mainwindow() and advancements() :)
 
 main.mainloop()
