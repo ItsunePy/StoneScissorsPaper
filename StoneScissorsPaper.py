@@ -29,7 +29,7 @@ try:
         f.write(icourl)
 except FileExistsError: pass
 try:
-    with open('images\\background.png', 'xb') as f:
+    with open('images\\mainbackground.png', 'xb') as f:
         bgurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/background.png').content
         f.write(bgurl)
 except FileExistsError: pass
@@ -59,8 +59,16 @@ a1, dataname, datapass, win, draw, lose = '', '', '', 0, 0, 0
 def success():
     global logbtn, regbtn, errorlr, stats, win, draw, lose, dataname, accountname
 
+    welcome.destroy()
+    userlogin.destroy()
+    userloginenter.destroy()
+    logshow.destroy()
+    userpassword.destroy()
+    userpasswordenter.destroy()
+    passshow.destroy()
     logbtn.destroy()
-    regbtn.destroy()
+    noacc.destroy()
+    noaccbtn.destroy()
     errorlr.destroy()
 
     mainwindoww.place(relx=0.2, rely=0.1, anchor='center')
@@ -70,6 +78,9 @@ def success():
     accountname.configure(text=f'Вы вошли под именем:\n{dataname}')
     stats.configure(text=f'На данный момент у вас:\n{win} побед\n{draw} ничьих\n{lose} поражений')
     advancementslabel1.configure(text=f'Первая победа - {a1}')
+
+    mainbg = ctk.CTkImage(dark_image=Image.open('images\\mainbackground.png'), size=(800, 500))
+    bglabel.configure(image=mainbg)
 
     mainwindow()
 
@@ -230,87 +241,50 @@ def advancements():
 
 # Start functions
 
-def loginscript():
-    global mx, my, regbtn, logbtn, wopened
+###
 
-    regbtn.configure(state='disabled')
-    logbtn.configure(state='disabled')
+def s_or_h_log():
+    if userloginenter.cget('show') == '●': userloginenter.configure(show='')
+    else: userloginenter.configure(show='●')
 
-    wopened = True
+def s_or_h_pass():
+    if userpasswordenter.cget('show') == '●': userpasswordenter.configure(show='')
+    else: userpasswordenter.configure(show='●')
 
-    def s_or_h_log():
-        if userloginenter.cget('show') == '●': userloginenter.configure(show='')
-        else: userloginenter.configure(show='●')
+blacklist = ['а', 'б', 'в', 'г', 'д', 'ё', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я', ' ', 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я']
 
-    def s_or_h_pass():
-        if userpasswordenter.cget('show') == '●': userpasswordenter.configure(show='')
-        else: userpasswordenter.configure(show='●')
+def validate_input(text):
+    if len(text) < 12:
+        for i in text:
+            if i in blacklist: return False
+        return True
+    else: return False
 
-    def logcloseevent():
-        global wopened
-        regbtn.configure(state='normal')
-        logbtn.configure(state='normal')
-        wopened = False
-        log.destroy()
+def loginfunc():
 
-    def validate_input(text):
-        if len(text) < 12 and ' ' not in text: return True
-        else: return False
+    global errorlr
+    dataname = userloginenter.get()
+    try: data = open("saves\\" + dataname + '.txt', 'r')
+    except FileNotFoundError: errorlr.configure(text='Аккаунт не найден.')
+    else:
+        with data:
+            datapass = userpasswordenter.get()
+            data = open("saves\\" + dataname + '.txt', 'r')
+            check = data.readline()
+            data.close()
+            check = check[:-1]
+            if check == datapass:
+                dataf(dataname)
+                success()
+            elif check != datapass:
+                errorlr.configure(text='Пароли не совпадают.')
 
-    log = ctk.CTk()
-    log.title('Вход')
-    log.geometry(f'170x200+{int(mx)+30}+{int(my)+150}')
-    log.resizable(0, 0)
-    log.iconbitmap('images\ssp.ico')
-
-    def loginfunc():
-
-        global errorlr, wopened
-        dataname = userloginenter.get()
-        try: data = open("saves\\" + dataname + '.txt', 'r')
-        except FileNotFoundError: errorlr.configure(text='Аккаунт не найден, данные отклонены!')
-        else:
-            with data:
-                datapass = userpasswordenter.get()
-                data = open("saves\\" + dataname + '.txt', 'r')
-                check = data.readline()
-                data.close()
-                check = check[:-1]
-                if check == datapass:
-                    dataf(dataname)
-                    success()
-                    wopened = False
-                    log.destroy()
-                elif check != datapass:
-                    errorlr.configure(text='Пароли не совпадают, данные отклонены!')
-
-    validate_cmd = (log.register(validate_input), '%P')  # new
-
-    userlogin = ctk.CTkLabel(master=log, text='Логин', font=('Minecraft Rus', 14))
-    userloginenter = ctk.CTkEntry(master=log, show='●', validate='key', validatecommand=validate_cmd, width=125)  # new
-    logshow = ctk.CTkSwitch(master=log, text='', width=10, command=s_or_h_log)  # new
-    userpassword = ctk.CTkLabel(master=log, text='Пароль', font=('Minecraft Rus', 14))
-    userpasswordenter = ctk.CTkEntry(master=log, show='●', validate='key', validatecommand=validate_cmd,width=125)  # new
-    passshow = ctk.CTkSwitch(master=log, text='', width=10, command=s_or_h_pass)  # new
-    apply = ctk.CTkButton(master=log, text='Войти', font=('Minecraft Rus', 14), command=loginfunc)
-
-    userlogin.pack(anchor='center')
-    userloginenter.place(x=5, y=25)
-    logshow.place(x=133, y=26)  # new
-    userpassword.place(x=85, y=70, anchor='center')
-    userpasswordenter.place(x=5, y=85)
-    passshow.place(x=133, y=86)  # new
-    apply.place(relx=0.5, rely=0.9, anchor='center')
-
-    log.protocol("WM_DELETE_WINDOW", logcloseevent)
-
-    log.mainloop()
-
+###
 
 def registrationscript():
     global mx, my, regbtn, wopened
 
-    regbtn.configure(state='disabled')
+    noaccbtn.configure(state='disabled')
     logbtn.configure(state='disabled')
 
     wopened = True
@@ -327,10 +301,6 @@ def registrationscript():
         if passwordenter2.cget('show') == '●': passwordenter2.configure(show='')
         else: passwordenter2.configure(show='●')
 
-    def validate_input(text):
-        if len(text) < 12 and ' ' not in text: return True
-        else: return False
-
     def regcloseevent():
         global wopened
         regbtn.configure(state='normal')
@@ -340,7 +310,7 @@ def registrationscript():
 
     reg = ctk.CTk()
     reg.title('Регистрация')
-    reg.geometry(f'170x200+{int(mx) + 600}+{int(my) + 150}')
+    reg.geometry(f'400x500+{int(mx) + 820}+{int(my)}')
     reg.resizable(0, 0)
     reg.iconbitmap('images\ssp.ico')
 
@@ -348,11 +318,11 @@ def registrationscript():
         global errorlr, wopened
         dataname = loginenter.get()
         try: data = open("saves\\" + dataname + '.txt', 'x')
-        except FileExistsError: errorlr.configure(text='Логин занят, попробуйте ещё раз.')
+        except FileExistsError: errorlr.configure(text='Логин занят.')
         else:
             with data:
                 if len(dataname) < 4:
-                    errorlr.configure(text='Логин слишком короткий, попробуйте ещё раз.')
+                    errorlr.configure(text='Логин слишком короткий.')
                     data.close()
                     os.remove("saves\\" + dataname + '.txt')
                 elif len(dataname) > 14:
@@ -362,12 +332,12 @@ def registrationscript():
                     datapass = passwordenter.get()
                     datapass2 = passwordenter2.get()
                     if datapass2 != datapass:
-                        errorlr.configure(text='Пароли не совпадают, данные отклонены!')
+                        errorlr.configure(text='Пароли не совпадают.')
                         data.close()
                         os.remove("saves\\" + dataname + '.txt')
                     else:
                         if len(datapass) < 4:
-                            errorlr.configure(text='Пароль слишком короткий, попробуйте ещё раз.')
+                            errorlr.configure(text='Пароль слишком короткий.')
                             data.close()
                             os.remove("saves\\" + dataname + '.txt')
                         else:
@@ -388,25 +358,27 @@ def registrationscript():
 
     validate_cmd = (reg.register(validate_input), '%P')
 
-    login = ctk.CTkLabel(master=reg, text='Логин', font=('Minecraft Rus', 14))
-    loginenter = ctk.CTkEntry(master=reg, show='●', validate='key', validatecommand=validate_cmd, width=125)
-    logshow = ctk.CTkSwitch(master=reg, text='', width=10, command=s_or_h_log)
-    password = ctk.CTkLabel(master=reg, text='Пароль', font=('Minecraft Rus', 14))
-    passwordenter = ctk.CTkEntry(master=reg, show='●', validate='key', validatecommand=validate_cmd, width=125)
-    passwordenter2 = ctk.CTkEntry(master=reg, show='●', validate='key', validatecommand=validate_cmd, width=125)
-    passshow = ctk.CTkSwitch(master=reg, text='', width=10, command=s_or_h_pass)
-    passshow2 = ctk.CTkSwitch(master=reg, text='', width=10, command=s_or_h_pass_2)
-    apply = ctk.CTkButton(master=reg, text='Войти', font=('Minecraft Rus', 14), command=registration)
+    regwelcome = ctk.CTkLabel(master=reg, text='Регистрация', font=('Minecraft Rus', 20), text_color='green')
+    login = ctk.CTkLabel(master=reg, text='Логин', font=('Minecraft Rus', 18))
+    loginenter = ctk.CTkEntry(master=reg, show='●', validate='key', validatecommand=validate_cmd, width=200, height=50)
+    logshow = ctk.CTkSwitch(master=reg, text='', width=50, command=s_or_h_log, height=50)
+    password = ctk.CTkLabel(master=reg, text='Пароль', font=('Minecraft Rus', 18))
+    passwordenter = ctk.CTkEntry(master=reg, show='●', validate='key', validatecommand=validate_cmd, width=200, height=50)
+    passwordenter2 = ctk.CTkEntry(master=reg, show='●', validate='key', validatecommand=validate_cmd, width=200, height=50)
+    passshow = ctk.CTkSwitch(master=reg, text='', width=50, command=s_or_h_pass, height=50)
+    passshow2 = ctk.CTkSwitch(master=reg, text='', width=50, command=s_or_h_pass_2, height=50)
+    regbtn = ctk.CTkButton(master=reg, text='Зарегистрироваться', font=('Minecraft Rus', 13), command=registration, height=50, width=200)
 
-    login.pack(anchor='center')
-    loginenter.place(x=5, y=25)
-    logshow.place(x=133, y=26)
-    password.place(x=85, y=70, anchor='center')
-    passwordenter.place(x=5, y=85)
-    passshow.place(x=133, y=86)
-    passwordenter2.place(x=5, y=118)
-    passshow2.place(x=133, y=119)
-    apply.place(relx=0.5, rely=0.9, anchor='center')
+    regwelcome.place(relx=0.5, rely=0.1, anchor='center')
+    login.place(relx=0.5, rely=0.21, anchor='center')
+    loginenter.place(relx=0.5, rely=0.3, anchor='center')
+    logshow.place(relx=0.825, rely=0.3, anchor='center')
+    password.place(relx=0.5, rely=0.39, anchor='center')
+    passwordenter.place(relx=0.5, rely=0.48, anchor='center')
+    passwordenter2.place(relx=0.5, rely=0.59, anchor='center')
+    passshow.place(relx=0.825, rely=0.48, anchor='center')
+    passshow2.place(relx=0.825, rely=0.59, anchor='center')
+    regbtn.place(relx=0.5, rely=0.71, anchor='center')
 
     reg.protocol('WM_DELETE_WINDOW', regcloseevent)
 
@@ -416,13 +388,38 @@ bg = ctk.CTkImage(dark_image=Image.open('images\\background.png'), size=(800, 50
 bglabel = ctk.CTkLabel(master=main, image=bg, text='')
 bglabel.place(x=0, y=0, relwidth=1, relheight=1)
 
-errorlr = ctk.CTkLabel(master=main, text='', text_color='red', font=('Minecraft Rus', 14))
-logbtn = ctk.CTkButton(master=main, text='Вход', command=loginscript, height=50, width=200, font=('Minecraft Rus', 14))
-regbtn = ctk.CTkButton(master=main, text='Регистрация', command=registrationscript, height=50, width=200, font=('Minecraft Rus', 14))
+###
 
-errorlr.place(relx=0.5, rely=0.8, anchor='center')
-logbtn.place(relx=0.5, rely=0.39, anchor='center')
-regbtn.place(relx=0.5, rely=0.51, anchor='center')
+validate_cmd = (main.register(validate_input), '%P')
+
+welcome = ctk.CTkLabel(master=main, text='Добро пожаловать!', font=('Minecraft Rus', 20), bg_color='gray17', text_color='lightblue')
+userlogin = ctk.CTkLabel(master=main, text='Логин', font=('Minecraft Rus', 18), bg_color='gray17')
+userloginenter = ctk.CTkEntry(master=main, show='●', validate='key', validatecommand=validate_cmd, width=200, height=50)
+logshow = ctk.CTkSwitch(master=main, text='', width=50, command=s_or_h_log, height=50, bg_color='gray17')
+userpassword = ctk.CTkLabel(master=main, text='Пароль', font=('Minecraft Rus', 18), bg_color='gray17')
+userpasswordenter = ctk.CTkEntry(master=main, show='●', validate='key', validatecommand=validate_cmd,width=200, height=50)
+passshow = ctk.CTkSwitch(master=main, text='', width=50, command=s_or_h_pass, height=50, bg_color='gray17')
+logbtn = ctk.CTkButton(master=main, text='Войти', font=('Minecraft Rus', 18), command=loginfunc, height=50, width=200)
+
+welcome.place(relx=0.815, rely=0.1, anchor='center')
+userlogin.place(relx=0.815, rely=0.21, anchor='center')
+userloginenter.place(relx=0.815, rely=0.3, anchor='center')
+logshow.place(relx=0.975, rely=0.3, anchor='center')
+userpassword.place(relx=0.815, rely=0.39, anchor='center')
+userpasswordenter.place(relx=0.815, rely=0.48, anchor='center')
+passshow.place(relx=0.975, rely=0.48, anchor='center')
+logbtn.place(relx=0.815, rely=0.6, anchor='center')
+
+###
+
+noacc = ctk.CTkLabel(master=main, text='Нет аккаунта?', font=('Minecraft Rus', 16), bg_color='gray17', text_color='lightblue')
+
+errorlr = ctk.CTkLabel(master=main, text='', text_color='red', font=('Minecraft Rus', 14), bg_color='gray17')
+noaccbtn = ctk.CTkButton(master=main, text='Жми сюда!', command=registrationscript, width=200, font=('Minecraft Rus', 14), fg_color='gray17', text_color='green', hover_color='gray17')
+
+errorlr.place(relx=0.815, rely=0.72, anchor='center')
+noaccbtn.place(relx=0.815, rely=0.88, anchor='center')
+noacc.place(relx=0.815, rely=0.82, anchor='center')
 
 mainwindoww = ctk.CTkButton(master=main, text='Главное окно', command=mainwindow, font=('Minecraft Rus', 14), height=80, width=150)
 advancementsw = ctk.CTkButton(master=main, text='Достижения', command=advancements, font=('Minecraft Rus', 14), height=80, width=150)
