@@ -30,6 +30,11 @@ try:
 except FileExistsError: pass
 try:
     with open('images\\mainbackground.png', 'xb') as f:
+        bgurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/mainbackground.png').content
+        f.write(bgurl)
+except FileExistsError: pass
+try:
+    with open('images\\background.png', 'xb') as f:
         bgurl = requests.get('https://raw.githubusercontent.com/ItsunePy/StoneScissorsPaper/master/images/background.png').content
         f.write(bgurl)
 except FileExistsError: pass
@@ -254,7 +259,7 @@ def s_or_h_pass():
 blacklist = ['а', 'б', 'в', 'г', 'д', 'ё', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я', ' ', 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я']
 
 def validate_input(text):
-    if len(text) < 12:
+    if len(text) < 19:
         for i in text:
             if i in blacklist: return False
         return True
